@@ -1,0 +1,12 @@
+{
+    "1": {
+        "titulo": "cartulina",
+        "descripcion": "Llevar una cartulina a la calse de espa\u00f1ol",
+        "estado": "pendiente"
+    },
+    "2": {
+        "titulo": "Escrito",
+        "descripcion": "Realizar un Resumen del libro que estamos leyyendo en Ingles ",
+        "estado": "completado"
+    }
+}

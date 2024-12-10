@@ -26,10 +26,8 @@ def menu():
                 case 2: Crud.listar_tareas()
                 case 3: Crud.marcar_como_completada()
                 case 4: Crud.eliminar_tarea()
-                case 5:
-                    pass
-                case 6:
-                    pass
+                case 5: Crud.exportar_tareas()
+                case 6: Crud.importar_tareas()
                 case 7: sys.exit() 
             
         except ValueError:
