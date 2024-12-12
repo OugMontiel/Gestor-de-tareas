@@ -18,15 +18,13 @@ def eliminar_tarea(tarea_id):
     else:
         raise ValueError("La nota no existe.")
 
-# def marcar_como_completada():
-#     tareas=BaseDatos.Carga()
-#     tarea_id = str(input("Ingrese el ID de la tarea a marcar como completada: "))
-#     if tarea_id in tareas:
-#         tareas[tarea_id]['estado'] = 'completado'
-#         print("Tarea marcada como completada.")
-#         BaseDatos.Guarda(tareas)
-#     else:
-#         print("Tarea no encontrada.")
+def cambiar_estado(tarea_id):
+    tareas=BaseDatos.Carga()
+    if tarea_id in tareas:
+        tareas[tarea_id]['estado'] = 'completado' if tareas[tarea_id]['estado'] == 'pendiente' else 'pendiente'
+        BaseDatos.Guarda(tareas)
+    else:
+        raise ValueError("La nota no existe.")
     
 # def exportar_tareas():
 #     with open('tareas.json', 'w') as archivo:

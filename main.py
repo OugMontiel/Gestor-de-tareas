@@ -6,15 +6,48 @@ import Modulos.Crud as Crud
 st.title("Aplicación de Notas")
 
 # Cargar las notas desde el archivo JSON
-notas = BaseDatos.Carga()
+# Función para recargar las notas 
+def recargar_notas(): return BaseDatos.Carga()
+notas = recargar_notas()
 
 # Mostrar las notas existentes
 st.header("Tus Notas")
+col1, col2, col3, col4 = st.columns(4)
+
+cols = [col1, col2, col3, col4]
+idx = 0
+
 for key, nota in notas.items():
-    st.subheader(f"Nota {key}")
-    st.text(f"Título: {nota['titulo']}")
-    st.text(f"Descripción: {nota['descripcion']}")
-    st.text(f"Estado: {nota['estado']}")
+    color = "#d4edda" if nota['estado'] == "completado" else "#f8d7da"  # Verde claro para completado, rojo claro para pendiente
+    boton_texto = "Marcar como completado" if nota['estado'] == "pendiente" else "Marcar como pendiente"
+    with cols[idx % 4]:
+        # st.subheader(f"Nota {key}")
+        st.markdown(
+            f"""
+            <div style="background-color: {color}; padding: 10px; border-radius: 5px;">
+                <h4 style='text-align: center;'>{nota['titulo']}</h4>
+                <p style='text-align: justify;'>{nota['descripcion']}</p>
+                <form action="" method="post">
+                <button 
+                  type="submit" 
+                  name="nota_{key}" 
+                  style="
+                    width: 100%; 
+                    background-color: {color};
+                    border: none;
+                    color: black; 
+                    padding: 10px; 
+                    border-radius: 5px;"
+                  ></button>
+                </form>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        if st.button(f"{boton_texto}"):
+            Crud.cambiar_estado(key)
+            notas = recargar_notas()
+    idx += 1
 
 # Añadir una nueva nota
 st.header("Añadir una nueva nota")
