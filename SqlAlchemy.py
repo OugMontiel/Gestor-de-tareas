@@ -25,6 +25,16 @@ class Tarea(Base):
 
 # Crear las tablas en la base de datos
 def create_tables(engine, Base):
+    # Definir el modelo de tareas
+    class Tarea(Base):
+        __tablename__ = 'tareas'
+        id = Column(Integer, primary_key=True)
+        titulo = Column(String)
+        descripcion = Column(String)
+        estado = Column(Boolean)
+
+        def __repr__(self):
+            return f"Tarea(id={self.id}, titulo='{self.titulo}', descripcion='{self.descripcion}', estado={self.estado})"
     Base.metadata.create_all(engine)
 
 # Crear una sesión

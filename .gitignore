@@ -1,2 +1,5 @@
 tareas.json
 .venv
+__pycache__
+__pycache__/SqlAlchemy.cpython-311.pyc
+tareas.db
