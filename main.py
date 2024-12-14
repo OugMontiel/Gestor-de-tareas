@@ -57,33 +57,62 @@ for idx, tarea in enumerate(notas):
                 notas = recargar_notas()  # Actualizar notas
                 break  
 
-# Añadir una nueva nota
-st.header("Añadir una nueva nota")
+# Titulo de acciones 
+st.header("Acciones")
 
-# Botón para mostrar el formulario
-if st.button("Agregar Nota"):
-    with st.expander("Formulario para añadir una nueva nota"):
-        titulo = st.text_input("Título de la nota")
-        descripcion = st.text_area("Descripción de la nota")
+# Dividir en tres columnas para los botones
+col1, col2, col3 = st.columns(3)
 
-        # Botón para agregar la nota dentro del formulario
-        if st.button("Guardar Nota"):
-            if titulo.strip() and descripcion.strip():
-                Sql.add_tarea(session, titulo, descripcion)
-                st.success("¡Nota agregada!")
-                notas = recargar_notas()
-            else:
-                st.error("El título y la descripción no pueden estar vacíos.")
+# Variable para rastrear el estado actual
+estado_actual = None
 
+# Botones en línea
+with col1:
+    if st.button("Agregar Nota"):
+        estado_actual = "agregar"
 
-# # Eliminar una nota
-# st.header("Eliminar una Nota")
-# nota_id = st.selectbox("Selecciona una nota para eliminar", list(notas.keys()))
+with col2:
+    if st.button("Exportar Notas"):
+        estado_actual = "exportar"
 
-# if st.button("Eliminar Nota"):
-#     try:
-#         Sql.delete_tarea(session, nota_id)
-#         st.success("¡Nota eliminada!")
-#     except ValueError as e:
-#         st.error("La nota seleccionada no existe.")
-#         st.error(str(e))
+with col3:
+    if st.button("Importar Notas"):
+        estado_actual = "importar"
+
+# Contenido dinámico según el estado actual
+if estado_actual == "agregar":
+    st.subheader("Añadir una nueva nota")
+    titulo = st.text_input("Título de la nota")
+    descripcion = st.text_area("Descripción de la nota")
+
+    if st.button("Guardar Nota"):
+        if titulo.strip() and descripcion.strip():
+            Sql.add_tarea(session, titulo, descripcion)
+            st.success("¡Nota agregada!")
+            notas = recargar_notas()  # Recargar notas después de agregar
+        else:
+            st.error("El título y la descripción no pueden estar vacíos.")
+
+elif estado_actual == "exportar":
+    st.subheader("Exportar Notas a CSV")
+    archivo_exportar = "tareas_exportadas.csv"  # Nombre del archivo de exportación
+    Sql.export_tareas(session, archivo_exportar)
+    with open(archivo_exportar, "rb") as file:
+        st.download_button(
+            label="Descargar Archivo Exportado",
+            data=file,
+            file_name=archivo_exportar,
+            mime="text/csv"
+        )
+        st.success("Notas exportadas correctamente.")
+
+elif estado_actual == "importar":
+    st.subheader("Importar Notas desde un CSV")
+    archivo_importar = st.file_uploader("Seleccionar archivo CSV para importar", type="csv")
+    if archivo_importar and st.button("Procesar Archivo"):
+        try:
+            Sql.import_tareas(session, archivo_importar)
+            notas = recargar_notas()  # Recargar notas después de la importación
+            st.success("Notas importadas correctamente.")
+        except Exception as e:
+            st.error(f"Error al importar las notas: {e}")
